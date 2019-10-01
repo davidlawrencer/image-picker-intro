@@ -7,11 +7,22 @@
 //
 
 import UIKit
+import Photos
 
 class ImagesViewController: UIViewController {
-
+    
+    var photoLibraryAccess = false
+    
     @IBOutlet weak var imageView: UIImageView!
     
+    @IBAction func barButtonPressed(_ sender: UIBarButtonItem) {
+        let imagePickerViewController = UIImagePickerController()
+        imagePickerViewController.delegate = self
+        imagePickerViewController.sourceType = .photoLibrary
+        
+        present(imagePickerViewController, animated: true, completion: nil)
+        
+    }
     var image = UIImage() {
         didSet {
             imageView.image = image
@@ -19,13 +30,48 @@ class ImagesViewController: UIViewController {
     }
     override func viewDidLoad() {
         super.viewDidLoad()
+        checkPhotoLibraryAccess()
     }
     
     @IBAction func addImageButtonPressed(_ sender: Any) {
         let imagePickerViewController = UIImagePickerController()
-        imagePickerViewController.delegate = self
-        present(imagePickerViewController, animated: true, completion: nil)
-        //open up that image picker thing, add it
+        if photoLibraryAccess {
+            imagePickerViewController.delegate = self
+            present(imagePickerViewController, animated: true, completion: nil)
+        } else {
+            let alertVC = UIAlertController(title: "No Access", message: "Camera access is required to use this app.", preferredStyle: .alert)
+            alertVC.addAction(UIAlertAction (title: "Ok", style: .default, handler: nil))
+            self.present(alertVC, animated: true, completion: nil)
+        }
+    }
+    
+    private func checkPhotoLibraryAccess() {
+        let status = PHPhotoLibrary.authorizationStatus()
+        
+        switch status {
+        case .authorized:
+            print(status)
+        case .notDetermined:
+            PHPhotoLibrary.requestAuthorization({status in
+                switch status {
+                case .authorized:
+                    self.photoLibraryAccess = true
+                    print(status)
+                case .denied:
+                    self.photoLibraryAccess = false
+                    print("denied")
+                case .notDetermined:
+                    print("not determined")
+                case .restricted:
+                    print("restricted")
+                }
+            })
+            
+        case .denied:
+            print("denied")
+        case .restricted:
+            print("restricted")
+        }
     }
 }
 
