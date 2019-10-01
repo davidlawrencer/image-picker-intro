@@ -35,13 +35,21 @@ class ImagesViewController: UIViewController {
     
     @IBAction func addImageButtonPressed(_ sender: Any) {
         let imagePickerViewController = UIImagePickerController()
+        imagePickerViewController.delegate = self
+        imagePickerViewController.sourceType = .photoLibrary
+
         if photoLibraryAccess {
             imagePickerViewController.delegate = self
             present(imagePickerViewController, animated: true, completion: nil)
         } else {
             let alertVC = UIAlertController(title: "No Access", message: "Camera access is required to use this app.", preferredStyle: .alert)
-            alertVC.addAction(UIAlertAction (title: "Ok", style: .default, handler: nil))
+            alertVC.addAction(UIAlertAction (title: "Deny", style: .destructive, handler: nil))
             self.present(alertVC, animated: true, completion: nil)
+
+            alertVC.addAction(UIAlertAction (title: "I will let you in", style: .default, handler: { (action) in
+                self.photoLibraryAccess = true
+                self.present(imagePickerViewController, animated: true, completion: nil)
+            }))
         }
     }
     
