@@ -68,7 +68,9 @@ class ImagesViewController: UIViewController {
             })
             
         case .denied:
-            print("denied")
+            let alertVC = UIAlertController(title: "Denied", message: "Camera access is required to use this app. Please change your preference in the Settings app", preferredStyle: .alert)
+            alertVC.addAction(UIAlertAction (title: "Ok", style: .default, handler: nil))
+            self.present(alertVC, animated: true, completion: nil)
         case .restricted:
             print("restricted")
         }
