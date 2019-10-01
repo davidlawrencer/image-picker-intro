@@ -15,7 +15,7 @@ class ImagesViewController: UIViewController {
     
     @IBOutlet weak var imageView: UIImageView!
     
-    @IBAction func barButtonPressed(_ sender: UIBarButtonItem) {
+    @IBAction func cameraButtonPressed(_ sender: UIBarButtonItem) {
         let imagePickerViewController = UIImagePickerController()
         imagePickerViewController.delegate = self
         imagePickerViewController.sourceType = .photoLibrary
